@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class Client : MonoBehaviour
 {
-    public int NumberOfWheels;
-    public bool Engine;
-    public int Passengers;
-    public bool Cargo;
+    private int NumberOfWheels;
+    private bool Engine;
+    private int Passengers;
+    private bool Cargo;
 
     public TextMeshProUGUI notificationText;
     public TextMeshProUGUI OutputText;
@@ -18,25 +18,29 @@ public class Client : MonoBehaviour
 
     public void OnCreateVehicle()
     {
+        if (numOfMessages > 0)
+            return;
+
         IVehicle v = GetVehicle(MakeNewRequirements());
         OutputText.text = v.ToString();
     }
 
-    public void UpdateEngine(Toggle toggle) { Engine = toggle; }
-    public void UpdateCargo(Toggle toggle) { Cargo = toggle; }
-    public void UpdateWheels(InputField inputField)
+    public void UpdateEngine(Toggle toggle) { Engine = toggle.isOn; }
+    public void UpdateCargo(Toggle toggle) { Cargo = toggle.isOn; }
+    public void UpdateWheels(TMP_InputField inputField)
     {
-        if (!int.TryParse(inputField.text, out NumberOfWheels))
-            ThrowMessage("Invalid Weel Count");
+        if (int.TryParse(inputField.text, out NumberOfWheels) == false)
+            StartCoroutine(ThrowMessage("Invalid Weel Count"));
     }
-    public void UpdatePassengeres(InputField inputField)
+    public void UpdatePassengeres(TMP_InputField inputField)
     {
-        if (!int.TryParse(inputField.text, out Passengers))
-            ThrowMessage("Invalid PassengerCount");
+        if (int.TryParse(inputField.text, out Passengers) == false)
+            StartCoroutine(ThrowMessage("Invalid PassengerCount"));
     }
 
     IEnumerator ThrowMessage(string message)
     {
+        Debug.Log("Throwing Message");
         numOfMessages++;
         int i = 0;
         while (i < numOfMessages)
